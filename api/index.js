@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const Ddos = require('ddos');
 const requestIp = require('request-ip');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -20,8 +21,16 @@ app.use(ddos.express);
 // Enable request IP logging
 app.use(requestIp.mw());
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
 // Serve Swagger UI at /api-docs endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Serve API version at /api/version endpoint
+app.use('/api/version', require('./routes/index'));
+
 
 // Start the server
 app.listen(port, () => {
